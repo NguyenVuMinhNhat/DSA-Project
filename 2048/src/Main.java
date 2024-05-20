@@ -1,11 +1,17 @@
+import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import javax.swing.*;
 
 public class Main extends Canvas implements Runnable{
 
@@ -27,6 +33,30 @@ public class Main extends Canvas implements Runnable{
         game = new Game();
         key = new Keyboard();
         addKeyListener(key);
+
+        frame.setLayout(new BorderLayout());
+        frame.add(this, BorderLayout.CENTER);
+
+        // Create and add the button
+        JButton aiButton = new JButton("Auto play");
+        aiButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("AI is running");;
+            }
+        });
+
+        JPanel panel = new JPanel();
+        panel.add(aiButton);
+        frame.add(panel, BorderLayout.NORTH);
+
+        frame.setResizable(false);
+        frame.setTitle("2048");
+        frame.pack();
+        frame.setVisible(true);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setAlwaysOnTop(true);
     }
 
     public void start(){
