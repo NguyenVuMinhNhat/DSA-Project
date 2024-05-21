@@ -5,7 +5,7 @@ public class GameObject {
     public double x, y;
     public int width, height;
     public Sprite sprite;
-    public int value, speed = 8;
+    public int value, speed = 12;
     public boolean moving = false, remove = false, hasMoved = false;
 
     Random rand = new Random();
@@ -13,9 +13,9 @@ public class GameObject {
     public GameObject(double x, double y){
         this.x = x;
         this.y = y;
-        this.value = (rand.nextBoolean() ? 2 : 4);
+        this.value = (rand.nextInt(100) < 90) ? 2 : 4;
         createSprite();
-        this.width = sprite.width;
+        this.width = sprite.width;      
         this.height = sprite.height;
     }
     

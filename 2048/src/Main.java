@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 
 import javax.swing.*;
 
-public class Main extends Canvas implements Runnable{
+public class Main extends Canvas implements Runnable {
 
     public static final int WIDTH = 400, HEIGHT = 400;
     public static float scale = 2.0f;
@@ -23,12 +23,13 @@ public class Main extends Canvas implements Runnable{
     public Keyboard key;
     public Game game;
     public boolean running = false;
+    public int[][] prevBoard = new int[4][4];
 
     public static BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
     public static int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 
-    public Main(){
-        setPreferredSize(new Dimension((int) (WIDTH * scale), (int) (HEIGHT *scale)));
+    public Main() {
+        setPreferredSize(new Dimension((int) (WIDTH * scale), (int) (HEIGHT * scale)));
         frame = new JFrame();
         game = new Game();
         key = new Keyboard();
@@ -42,7 +43,8 @@ public class Main extends Canvas implements Runnable{
         aiButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("AI is running");;
+                System.out.println("AI is running");
+                ;
             }
         });
 
@@ -59,13 +61,13 @@ public class Main extends Canvas implements Runnable{
         frame.setAlwaysOnTop(true);
     }
 
-    public void start(){
+    public void start() {
         running = true;
         thread = new Thread(this, "loopTread");
         thread.start();
     }
 
-    public void stop(){
+    public void stop() {
         try {
             thread.join();
         } catch (InterruptedException e) {
@@ -73,18 +75,30 @@ public class Main extends Canvas implements Runnable{
         }
     }
 
-    public void run(){
+    public void updateBoard() {
+
+        for (int i = 0; i < prevBoard.length; i++) {
+            for (int j = 0; j < prevBoard[0].length; j++) {
+                prevBoard[i][j] = game.getBoard()[i][j];
+            }
+        }
+    }
+
+    public void run() {
         long lastTimeInNanoSeconds = System.nanoTime();
         long timer = System.currentTimeMillis();
-        double nanoSecondsPerUpdate = 1000000000.0/60.0;
+        double nanoSecondsPerUpdate = 1000000000.0 / 60.0;
         double updatesToPerform = 0.0;
         int frames = 0;
         int updates = 0;
+        updateBoard();
+
         requestFocus();
         while (running) {
+
             long currentTimeInNanoSeconds = System.nanoTime();
             updatesToPerform += (currentTimeInNanoSeconds - lastTimeInNanoSeconds) / nanoSecondsPerUpdate;
-            if(updatesToPerform >= 1){
+            if (updatesToPerform >= 1) {
                 update();
                 updates++;
                 updatesToPerform--;
@@ -94,23 +108,42 @@ public class Main extends Canvas implements Runnable{
             render();
             frames++;
 
-            if(System.currentTimeMillis() - timer > 1000){
+            if (System.currentTimeMillis() - timer > 1000) {
                 frame.setTitle("2048 " + updates + " updates, " + frames + " frames");
                 updates = 0;
                 frames = 0;
                 timer += 1000;
             }
+
+            boolean boardChanged = false;
+            for (int i = 0; i < game.getBoard().length; i++) {
+                for (int j = 0; j < game.getBoard()[0].length; j++) {
+                    if (game.getBoard()[i][j] != prevBoard[i][j]) {
+                        boardChanged = true;
+                        break;
+                    }
+                }
+                if (boardChanged)
+                    break;
+            }
+
+            if (boardChanged) {
+                updateBoard();
+                game.printBoard();
+
+            }
         }
+
     }
 
-    public void update(){
+    public void update() {
         game.update();
         key.update();
     }
 
-    public void render(){
+    public void render() {
         BufferStrategy bs = getBufferStrategy();
-        if(bs == null){
+        if (bs == null) {
             createBufferStrategy(3);
             return;
         }
