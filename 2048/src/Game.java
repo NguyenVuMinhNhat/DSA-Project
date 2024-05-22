@@ -50,6 +50,17 @@ public class Game {
 
     }
 
+    public void updateAI() {
+
+        for (int i = 0; i < objects.size(); i++) {
+            objects.get(i).update();
+        }
+
+        checkForValueIncrease();
+        movingAILogic();
+
+    }
+
     private void checkForValueIncrease() {
 
         for (int i = 0; i < objects.size(); i++) {
@@ -105,6 +116,49 @@ public class Game {
         updateBoard();
     }
 
+    private void movingAILogic() {
+        somethingIsMoving = false;
+        for (int i = 0; i < objects.size(); i++) {
+            if (objects.get(i).moving) {
+                somethingIsMoving = true;
+            }
+        }
+
+        if (!somethingIsMoving) {
+            moving = false;
+            for (int i = 0; i < objects.size(); i++) {
+                objects.get(i).hasMoved = false;
+            }
+        }
+
+        if (!moving && hasMoved) {
+            spawn();
+            hasMoved = false;
+        }
+
+        int moveValue = ai.moveKey(board);
+
+        if (!moving && !hasMoved) {
+            if (moveValue == 65 ) {
+                hasMoved = true;
+                moving = true;
+                dir = 0;
+            } else if (moveValue == 68) {
+                hasMoved = true;
+                moving = true;
+                dir = 1;
+            } else if (moveValue == 87) {
+                hasMoved = true;
+                moving = true;
+                dir = 2;
+            } else if (moveValue == 83) {
+                hasMoved = true;
+                moving = true;
+                dir = 3;
+            }
+        }
+    }
+
     private void movingLogic() {
         somethingIsMoving = false;
         for (int i = 0; i < objects.size(); i++) {
@@ -124,23 +178,21 @@ public class Game {
             spawn();
             hasMoved = false;
         }
-        
-        int moveValue = ai.moveKey(board);
 
         if (!moving && !hasMoved) {
-            if (/*Keyboard.keyDown(KeyEvent.VK_A) || Keyboard.keyDown(KeyEvent.VK_LEFT) || */ moveValue == 65 ) {
+            if (Keyboard.keyDown(KeyEvent.VK_A) || Keyboard.keyDown((KeyEvent.VK_LEFT))) {
                 hasMoved = true;
                 moving = true;
                 dir = 0;
-            } else if ( /*Keyboard.keyDown(KeyEvent.VK_D) || Keyboard.keyDown(KeyEvent.VK_RIGHT) || */ moveValue == 68) {
+            } else if (Keyboard.keyDown(KeyEvent.VK_D) || Keyboard.keyDown((KeyEvent.VK_RIGHT))) {
                 hasMoved = true;
                 moving = true;
                 dir = 1;
-            } else if (/*Keyboard.keyDown(KeyEvent.VK_W) || Keyboard.keyDown(KeyEvent.VK_UP) || */ moveValue == 87) {
+            } else if (Keyboard.keyDown(KeyEvent.VK_W) || Keyboard.keyDown((KeyEvent.VK_UP))) {
                 hasMoved = true;
                 moving = true;
                 dir = 2;
-            } else if (/*Keyboard.keyDown(KeyEvent.VK_S) || Keyboard.keyDown(KeyEvent.VK_DOWN) || */ moveValue == 83) {
+            } else if (Keyboard.keyDown(KeyEvent.VK_S) || Keyboard.keyDown((KeyEvent.VK_DOWN))) {
                 hasMoved = true;
                 moving = true;
                 dir = 3;

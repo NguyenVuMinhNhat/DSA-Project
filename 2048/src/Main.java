@@ -23,6 +23,7 @@ public class Main extends Canvas implements Runnable {
     public Keyboard key;
     public Game game;
     public boolean running = false;
+    public volatile boolean autoplay = false; // Volatile boolean for autoplay control
     public int[][] prevBoard = new int[4][4];
 
     public static BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
@@ -38,18 +39,40 @@ public class Main extends Canvas implements Runnable {
         frame.setLayout(new BorderLayout());
         frame.add(this, BorderLayout.CENTER);
 
-        // Create and add the button
+        // Create and add the Auto play button
         JButton aiButton = new JButton("Auto play");
         aiButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("AI is running");
-                ;
+                autoplay = true;
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        while (autoplay) {
+                            game.updateAI();
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException ex) {
+                                ex.printStackTrace();
+                            }
+                        }
+                    }
+                }).start();
+            }
+        });
+
+        // Stop button
+        JButton stopButton = new JButton("Stop");
+        stopButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                autoplay = false;
             }
         });
 
         JPanel panel = new JPanel();
         panel.add(aiButton);
+        panel.add(stopButton);
         frame.add(panel, BorderLayout.NORTH);
 
         frame.setResizable(false);
