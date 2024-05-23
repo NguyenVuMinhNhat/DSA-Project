@@ -15,6 +15,7 @@ public class Game {
     public static int score = 0; // Add score variable
     private int[][] board = new int[4][4];
     private AlphaBetaAI ai = new AlphaBetaAI();
+    private RandomAI randomAI = new RandomAI();
 
     private Random rand = new Random();
 
@@ -59,6 +60,15 @@ public class Game {
         checkForValueIncrease();
         movingAILogic();
 
+    }
+
+    public void updateRandom() {
+        for (int i = 0; i < objects.size(); i++) {
+            objects.get(i).update();
+        }
+
+        checkForValueIncrease();
+        movingRandom();
     }
 
     private void checkForValueIncrease() {
@@ -152,6 +162,49 @@ public class Game {
                 moving = true;
                 dir = 2;
             } else if (moveValue == 83) {
+                hasMoved = true;
+                moving = true;
+                dir = 3;
+            }
+        }
+    }
+
+    private void movingRandom() {
+        somethingIsMoving = false;
+        for (int i = 0; i < objects.size(); i++) {
+            if (objects.get(i).moving) {
+                somethingIsMoving = true;
+            }
+        }
+
+        if (!somethingIsMoving) {
+            moving = false;
+            for (int i = 0; i < objects.size(); i++) {
+                objects.get(i).hasMoved = false;
+            }
+        }
+
+        if (!moving && hasMoved) {
+            spawn();
+            hasMoved = false;
+        }
+
+        int moveValue = randomAI.getNextMove();
+
+        if (!moving && !hasMoved) {
+            if (moveValue == KeyEvent.VK_A ) {
+                hasMoved = true;
+                moving = true;
+                dir = 0;
+            } else if (moveValue == KeyEvent.VK_D) {
+                hasMoved = true;
+                moving = true;
+                dir = 1;
+            } else if (moveValue == KeyEvent.VK_W) {
+                hasMoved = true;
+                moving = true;
+                dir = 2;
+            } else if (moveValue == KeyEvent.VK_S) {
                 hasMoved = true;
                 moving = true;
                 dir = 3;

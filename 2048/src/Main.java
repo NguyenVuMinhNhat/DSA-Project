@@ -61,6 +61,28 @@ public class Main extends Canvas implements Runnable {
             }
         });
 
+        // Create and add the Random play button
+        JButton randomButton = new JButton("Random play");
+        randomButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                autoplay = true;
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        while (autoplay) {
+                            game.updateRandom();
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException ex) {
+                                ex.printStackTrace();
+                            }
+                        }
+                    }
+                }).start();
+            }
+        });
+
         // Stop button
         JButton stopButton = new JButton("Stop");
         stopButton.addActionListener(new ActionListener() {
@@ -73,6 +95,7 @@ public class Main extends Canvas implements Runnable {
         JPanel panel = new JPanel();
         panel.add(aiButton);
         panel.add(stopButton);
+        panel.add(randomButton);
         frame.add(panel, BorderLayout.NORTH);
 
         frame.setResizable(false);
