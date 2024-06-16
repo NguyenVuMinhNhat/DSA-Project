@@ -14,7 +14,8 @@ public class Game {
     public static int dir = 0;
     public static int score = 0; // Add score variable
     private int[][] board = new int[4][4];
-    private AlphaBetaAI ai = new AlphaBetaAI();
+    private AlphaBetaAI AlphaBetaAI = new AlphaBetaAI();
+    private HeuristicAI heuristicAI = new HeuristicAI();
     private RandomAI randomAI = new RandomAI();
 
     private Random rand = new Random();
@@ -146,7 +147,7 @@ public class Game {
             hasMoved = false;
         }
 
-        int moveValue = ai.moveKey(board);
+        int moveValue = AlphaBetaAI.moveKey(board);
 
         if (!moving && !hasMoved) {
             if (moveValue == 65 ) {
