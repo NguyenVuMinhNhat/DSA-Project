@@ -40,12 +40,12 @@ public class AlphaBetaAI {
     }
 
 
-    private double alphaBeta(int[][] board, int depth, double alpha, double beta, boolean isMaximizingPlayer) {
+    private double alphaBeta(int[][] board, int depth, double alpha, double beta, boolean isMax) {
         if (depth == 0) {
             return evaluate(board);
         }
 
-        if (isMaximizingPlayer) {
+        if (isMax) {
             double maxScore = -Double.MAX_VALUE;
             for (Move move : MOVES) {
                 int[][] newBoard = simulateMove(board, move);

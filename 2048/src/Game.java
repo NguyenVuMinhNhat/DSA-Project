@@ -147,7 +147,7 @@ public class Game {
             hasMoved = false;
         }
 
-        int moveValue = heuristicAI.moveKey(board);
+        int moveValue = AlphaBetaAI.moveKey(board);
 
         if (!moving && !hasMoved) {
             if (moveValue == 65 ) {
