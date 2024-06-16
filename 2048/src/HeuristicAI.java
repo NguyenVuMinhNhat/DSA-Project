@@ -131,7 +131,7 @@ public class HeuristicAI {
 
         double score = 0.0;
         score += emptyTiles * 3;         
-        score += Math.log(maxTile) * 2.5;  
+        score += Math.log(maxTile) * 1000;  
         score += monotonicity * 1;       
         score += smoothness * 0.1;         
         score += mergingPotential * 0.7;   
