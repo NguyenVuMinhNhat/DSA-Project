@@ -5,7 +5,7 @@ public class GameObject {
     public double x, y;
     public int width, height;
     public Sprite sprite;
-    public int value, speed = 12;
+    public int value, speed = 30;
     public boolean moving = false, remove = false, hasMoved = false;
 
     Random rand = new Random();

@@ -15,7 +15,7 @@ public class Game {
     public static int score = 0; // Add score variable
     private int[][] board = new int[4][4];
     private AlphaBetaAI AlphaBetaAI = new AlphaBetaAI();
-    private HeuristicAI heuristicAI = new HeuristicAI();
+    
     private RandomAI randomAI = new RandomAI();
 
     private Random rand = new Random();

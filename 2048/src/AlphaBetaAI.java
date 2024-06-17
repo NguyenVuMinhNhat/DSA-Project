@@ -3,9 +3,12 @@ import java.util.Arrays;
 
 public class AlphaBetaAI {
     private static final int DEPTH = 6;
-    public enum Move {UP, DOWN, LEFT, RIGHT};
-    private static final Move[] MOVES = Move.values();
 
+    public enum Move {
+        UP, DOWN, LEFT, RIGHT
+    };
+
+    private static final Move[] MOVES = Move.values();
 
     public Move findBestMove(int[][] board) {
         Move bestMove = null;
@@ -24,21 +27,18 @@ public class AlphaBetaAI {
         return bestMove;
     }
 
-    public int moveKey(int[][] board){
+    public int moveKey(int[][] board) {
         Move bestMove = findBestMove(board);
         if (bestMove == Move.UP) {
             return KeyEvent.VK_W;
-        }
-        else if (bestMove == Move.DOWN){
+        } else if (bestMove == Move.DOWN) {
             return KeyEvent.VK_S;
-        }
-        else if (bestMove == Move.LEFT){
+        } else if (bestMove == Move.LEFT) {
             return KeyEvent.VK_A;
-        }else {
+        } else {
             return KeyEvent.VK_D;
         }
     }
-
 
     private double alphaBeta(int[][] board, int depth, double alpha, double beta, boolean isMax) {
         if (depth == 0) {
@@ -53,8 +53,8 @@ public class AlphaBetaAI {
                     double score = alphaBeta(newBoard, depth - 1, alpha, beta, false);
                     maxScore = Math.max(maxScore, score);
                     alpha = Math.max(alpha, score);
-                    if (beta <= alpha) {
-                        break; // Beta cut-off
+                    if (alpha >= beta) {
+                        break;
                     }
                 }
             }
@@ -69,8 +69,8 @@ public class AlphaBetaAI {
                         minScore = Math.min(minScore, alphaBeta(boardWithTwo, depth - 1, alpha, beta, true));
                         beta = Math.min(beta, minScore);
 
-                        if (beta <= alpha) {
-                            break; // Alpha cut-off
+                        if (alpha >= beta) {
+                            break;
                         }
 
                         int[][] boardWithFour = copyBoard(board);
@@ -78,8 +78,8 @@ public class AlphaBetaAI {
                         minScore = Math.min(minScore, alphaBeta(boardWithFour, depth - 1, alpha, beta, true));
                         beta = Math.min(beta, minScore);
 
-                        if (beta <= alpha) {
-                            break; // Alpha cut-off
+                        if (alpha >= beta) {
+                            break;
                         }
                     }
                 }
@@ -87,7 +87,6 @@ public class AlphaBetaAI {
             return minScore;
         }
     }
-
 
     private int[][] simulateMove(int[][] board, Move move) {
         int[][] newBoard = copyBoard(board);
@@ -162,21 +161,39 @@ public class AlphaBetaAI {
         return reversed;
     }
 
-
     private double evaluate(int[][] board) {
-        int emptyTiles = 0;
+        double score = 0;
+        int emptyCells = 0;
+        double monotonicity = 0;
         int maxTile = 0;
-        for (int[] row : board) {
-            for (int tile : row) {
-                if (tile == 0) {
-                    emptyTiles++;
+
+        // Calculate score, maxTile, and count empty cells
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                int value = board[i][j];
+                score += value;
+                if (value == 0) {
+                    emptyCells++;
                 }
-                if (tile > maxTile) {
-                    maxTile = tile;
+                if (value > maxTile) {
+                    maxTile = value;
                 }
             }
         }
-        return emptyTiles + Math.log(maxTile) / Math.log(2);
+
+        // Calculate monotonicity
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length - 1; j++) {
+                monotonicity += Math.abs(board[i][j] - board[i][j + 1]);
+            }
+        }
+        for (int j = 0; j < board[0].length; j++) {
+            for (int i = 0; i < board.length - 1; i++) {
+                monotonicity += Math.abs(board[i][j] - board[i + 1][j]);
+            }
+        }
+        
+        return score + (Math.log(maxTile) / Math.log(2)) + (emptyCells * 100) - monotonicity;
     }
 
     private int[][] copyBoard(int[][] board) {

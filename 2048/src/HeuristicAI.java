@@ -130,10 +130,10 @@ public class HeuristicAI {
         double mergingPotential = calculateMergingPotential(board);
 
         double score = 0.0;
-        score += emptyTiles * 3;         
+        score += emptyTiles * 500;         
         score += Math.log(maxTile) * 1000;  
         score += monotonicity * 1;       
-        score += smoothness * 0.1;         
+        score += smoothness  * 0.1;         
         score += mergingPotential * 0.7;   
 
         return score;
